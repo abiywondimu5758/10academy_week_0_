@@ -62,20 +62,15 @@ class SlackDataLoader:
         '''
 
         channel_messages = []
-
-        # Assuming each channel has a separate folder in the specified path
         channel_folder_path = os.path.join(self.path, channel_name)
 
-        # Iterate through each JSON file in the channel folder
         for json_file in os.listdir(channel_folder_path):
             if json_file.endswith(".json"):
                 json_file_path = os.path.join(channel_folder_path, json_file)
 
-                # Load messages from the current JSON file
                 with open(json_file_path, 'r') as f:
                     messages = json.load(f)
 
-                # Extend the list of channel_messages with messages from the current file
                 channel_messages.extend(messages)
 
         return channel_messages
