@@ -3,15 +3,12 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
-from io import BytesIO
-import mlflow
-from gensim import corpora, models
-from textblob import TextBlob
+from gensim import models
 
 
 # Load data and models
-combined_df = pd.read_csv('combined_df.csv') 
-mlflow_model_path = '../notebooks/lda_model' 
+combined_df = pd.read_csv('./combined_df.csv') 
+mlflow_model_path = './model/lda_model' 
 
 # Set page configuration
 st.set_page_config(layout="wide")
@@ -20,12 +17,6 @@ st.set_page_config(layout="wide")
 def get_top_users(data, top_n=10):
     return data['sender_name'].value_counts()[:top_n]
 
-
-
-
-
-
-
 # Sidebar
 st.sidebar.title("Dashboard Menu")
 selected_chart = st.sidebar.selectbox("Select Chart", ["Top Users", "Message Distribution", "Word Cloud",
@@ -33,7 +24,7 @@ selected_chart = st.sidebar.selectbox("Select Chart", ["Top Users", "Message Dis
                                                        "Average Reply Count per User", "Average Reply Users Count per User",
                                                        "Average Word Count per Message", "WordCloud for Each Channel",
                                                        "User Reactions",  "Message Classification Distribution",
-                                                       "Topic Modeling Results"])
+                                                       "Topic Modeling Results","Sentiment Analysis"])
 
 # Main content
 st.title("Slack Analytics Dashboard")
@@ -130,6 +121,12 @@ elif selected_chart == "Topic Modeling Results":
     for idx, topic in lda_model.print_topics():
         st.subheader(f'Topic {idx + 1}: {topic}')
 
+elif selected_chart == "Sentiment Analysis":
+    sentiment_plot_path = "./sentiment_analysis_plot.png"
+    sentiment_plot = plt.imread(sentiment_plot_path)
+    st.image(sentiment_plot, use_column_width=True, caption="Sentiment Over Time")
+
+
 # MLflow integration
 st.header("MLflow Model Info")
 with st.spinner("Loading model info..."):
@@ -138,7 +135,7 @@ with st.spinner("Loading model info..."):
 
 # Download data link
 st.header("Download Data")
-st.markdown("[Download Combined Data](combined_df.csv)", unsafe_allow_html=True)
+st.markdown("[Download Data Here](combined_df.csv)", unsafe_allow_html=True)
 
 # Streamlit app command
 if __name__ == '__main__':
